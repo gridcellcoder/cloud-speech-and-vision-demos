@@ -1,0 +1,30 @@
+{
+  "name": "google-speech-demo-server",
+  "version": "0.0.1",
+  "description": "Speech Server",
+  "license": "Apache License, Version 2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gridcellcoder/google-speech-demos/speech-server"
+  },
+  "author": "GridCell",
+  "contributors": [
+    "Nuno Freire <windowpane@gridcell.io"
+  ],
+  "homepage": "https://github.com/gridcellcoder/google-speech-demos",
+  "main": "server.ts",
+  "scripts": {
+    "tsc": "tsc",
+    "deploy": "gcloud app deploy",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node dist/server.js"
+  },
+  "dependencies": {
+    "@google-cloud/speech": "^0.9.3",
+    "@types/node": "~6.0.60",
+    "binaryjs": "^0.2.1",
+    "ts-node": "~3.0.6",
+    "tslint": "~5.4.3",
+    "typescript": "~2.3.4"
+  }
+}

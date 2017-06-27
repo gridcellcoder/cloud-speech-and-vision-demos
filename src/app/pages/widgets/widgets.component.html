@@ -1,0 +1,135 @@
+<!--
+  ~ Copyright (c) 2017. GridCell Ltd
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div class="content">
+  <div class="col-sm-12 col-md-11 col-md-offset-1 col-lg-8 col-lg-offset-2">
+
+    <md-card class="card">
+      <div class="h2 title text-uppercase inline"><img width="100px" height="100px" src="http://gridcell.io/images/batchinsights-logo-white.png"> Cloud Speech Demos by GridCell </div>
+      <p>
+        This project showcases some of the APIs made available by the Google Cloud platform, namely:
+      </p>
+      <ul>
+        <li><a class="md-primary" href="https://cloud.google.com/speech/" target="_blank">Google Cloud Speech</a>
+        <li><a href="https://cloud.google.com/natural-language/" target="_blank">Google Cloud Natural Language</a>
+        <li><a href="https://cloud.google.com/vision/" target="_blank">Google Cloud Vision</a>
+      </ul>
+      <p>It also showcases the Web Speech API made available by all modern browsers, as a mean of comparision against Google Cloud Speech.</p>
+      <p>The source code and instructions for this project can be found on:
+        <a href="https://github.com/gridcellcoder/cloud-speech-and-vision-demos" target="_blank">github</a>
+      </p>
+    </md-card>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 col-md-5 col-md-offset-1 col-lg-4 col-lg-offset-2">
+
+      <md-card [ngBusy]="webSpeechSubscription" class="card">
+        <div class="h4 title text-uppercase inline">Web Speech API</div>
+        <p>Press the start button and say something..</p>
+        <button md-raised-button class="inline"
+                [disabled]="webSpeechSubscription"
+                color="accent" (click)="startWebSpeech()">START
+        </button>
+        <div class="spacer"></div>
+        <md-input-container class="mb-0">
+          <textarea mdInput rows="2" [disabled]="!webSpeechTranscript"
+                    placeholder="Audio Transcription" [(ngModel)]="webSpeechTranscript">
+          </textarea>
+        </md-input-container>
+        <div class="spacer"></div>
+        <div *ngIf="webSpeechAnalysis">
+          <div>
+            Sentiment
+            <a href="https://cloud.google.com/natural-language/docs/basics#sentiment-analysis-values"><span
+              class="fa fa-question-circle"></span></a>
+            Score: {{webSpeechAnalysis.sentiment.score}}, Magnitude: {{webSpeechAnalysis.sentiment.magnitude}}
+            <span class="fa fa-refresh" (click)="webSpeechAnalyseTranscript()"></span>&nbsp;
+            <span class="fa fa-save" (click)="speechAnalysisSave(webSpeechAnalysis)"></span>
+          </div>
+          <md-chip-list class="md-chip-list">
+            <md-chip *ngFor="let tag of webSpeechAnalysis.tags" color="accent">
+              <span *ngIf="!tag.wikipedia_url">{{tag.type}} - "{{tag.name}}"</span>
+              <a *ngIf="tag.wikipedia_url" [href]="tag.wikipedia_url">{{tag.type}} - "{{tag.name}}"</a>
+            </md-chip>
+          </md-chip-list>
+        </div>
+      </md-card>
+    </div>
+
+    <div class="col-sm-6 col-md-5 col-lg-4">
+      <md-card [ngBusy]="gCloudSpeechSubscription" class="card">
+        <div class="h4 title text-uppercase inline">GCloud Speech API</div>
+        <p>First start the speech-server (See README). Then press the start button and say something..</p>
+        <button md-raised-button class="inline"
+                [disabled]="gCloudSpeechSubscription"
+                color="accent" (click)="startGCloudSpeech()">START
+        </button>
+        <div class="spacer"></div>
+        <md-input-container class="mb-0">
+          <textarea mdInput rows="2" [disabled]="!gCloudSpeechTranscript"
+                    placeholder="Audio Transcription" [(ngModel)]="gCloudSpeechTranscript">
+          </textarea>
+        </md-input-container>
+        <div class="spacer"></div>
+        <div *ngIf="gCloudSpeechAnalysis">
+          <div>
+            Sentiment
+            <a href="https://cloud.google.com/natural-language/docs/basics#sentiment-analysis-values"><span
+              class="fa fa-question-circle"></span></a>
+            Score: {{gCloudSpeechAnalysis.sentiment.score}}, Magnitude: {{gCloudSpeechAnalysis.sentiment.magnitude}}
+            <span class="fa fa-refresh" (click)="gCloudSpeechAnalyseTranscript()"></span>&nbsp;
+            <span class="fa fa-save" (click)="speechAnalysisSave(gCloudSpeechAnalysis)"></span>
+          </div>
+          <md-chip-list class="md-chip-list">
+            <md-chip *ngFor="let tag of gCloudSpeechAnalysis.tags" color="accent">
+              <span *ngIf="!tag.wikipedia_url">{{tag.type}} - "{{tag.name}}"</span>
+              <a *ngIf="tag.wikipedia_url" [href]="tag.wikipedia_url">{{tag.type}} - "{{tag.name}}"</a>
+            </md-chip>
+          </md-chip-list>
+        </div>
+      </md-card>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+      <md-card [ngBusy]="gCloudVisionSubscription" class="card">
+        <div class="h4 title text-uppercase">GCloud Vision API</div>
+        <p>First select some features. Then upload an image from your computer to analyze its content</p>
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+        <md-select class="select-features" placeholder="Features"
+                   [(ngModel)]="selectedVisionFeatures" (ngModelChange)="fileChange({ target: fileInput })"
+                   name="features" multiple="true">
+          <md-option *ngFor="let feature of getVisionFeatureKeys()" [value]="feature">
+            {{feature}}
+          </md-option>
+        </md-select>
+        <input #fileInput type="file" class="inline" placeholder="Upload image file" accept="image/*"
+               (change)="fileChange($event)">
+        <div class="spacer"></div>
+        <agm-map *ngIf="gCloudVisionLocation"
+                 [latitude]="gCloudVisionLocation.latitude" [longitude]="gCloudVisionLocation.longitude"
+                 [zoom]="17" mapTypeId="satellite">
+          <agm-marker [latitude]="gCloudVisionLocation.latitude"
+                      [longitude]="gCloudVisionLocation.longitude"></agm-marker>
+        </agm-map>
+        <div class="spacer"></div>
+        <pre *ngIf="gCloudVisionAnalysis">{{gCloudVisionAnalysis}}</pre>
+      </md-card>
+    </div>
+  </div>
+
+</div>
