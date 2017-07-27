@@ -1,18 +1,23 @@
-/*
- * Copyright (c) 2017. GridCell Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/**
+Copyright 2017 GridCell Ltd
+
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
 
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { DialogAlertComponent } from '../../components/index';
@@ -22,6 +27,7 @@ import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import {
   WebSpeechService,
+  WebSynthService,
   GCloudSpeechService,
   GCloudNLPService,
   GCloudVisionService
@@ -47,6 +53,9 @@ export class PageWidgetsComponent implements OnInit, OnDestroy {
   webSpeechTranscript: string;
   webSpeechAnalysis: NLPSpeechAnalysis;
 
+  webSynthSubscription: Subscription;
+  webSynthUtterance: string;
+
   gCloudSpeechSubscription: Subscription;
   gCloudSpeechTranscript: string;
   gCloudSpeechAnalysis: NLPSpeechAnalysis;
@@ -59,6 +68,7 @@ export class PageWidgetsComponent implements OnInit, OnDestroy {
 
   constructor(
     private webSpeechService: WebSpeechService,
+    private webSynthService: WebSynthService,
     private gCloudSpeechService: GCloudSpeechService,
     private gCloudNLPService: GCloudNLPService,
     private gCloudVisionService: GCloudVisionService,
@@ -107,6 +117,22 @@ export class PageWidgetsComponent implements OnInit, OnDestroy {
     });
   }
 
+  startWebSynth() {
+    this.webSynthUtterance = null;
+    this.webSynthSubscription = this.webSynthService.start().subscribe((data: any) => {
+      console.log('WebSynthAPI: ' + JSON.stringify(data));
+      if (data.type === 'tag') {
+        this.webSynthUtterance = data.value;
+      } else if (data.type === 'end') {
+        this.stopWebSynth(); // we want to get the first result and stop...
+      }
+    }, (error: any) => {
+      console.log('WebSynthAPI: ' + JSON.stringify(error));
+      this.stopWebSynth();
+      this.showAlert('Oops! Something wrong happened:', error.value, this.startWebSynth.bind(this));
+    });
+  }
+
   startGCloudSpeech() {
     this.gCloudSpeechTranscript = null;
     this.gCloudSpeechAnalysis = null;
@@ -130,6 +156,14 @@ export class PageWidgetsComponent implements OnInit, OnDestroy {
     if (this.webSpeechSubscription) {
       this.webSpeechSubscription.unsubscribe();
       this.webSpeechSubscription = null;
+    }
+  }
+
+  stopWebSynth() {
+    this.webSynthService.stop();
+    if (this.webSynthSubscription) {
+      this.webSynthSubscription.unsubscribe();
+      this.webSynthSubscription = null;
     }
   }
 

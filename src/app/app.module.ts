@@ -29,6 +29,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { DialogAlertComponent } from './components/index';
 import { PageWidgetsComponent } from './pages/index';
 import { WebSpeechService,
+  WebSynthService,
   GCloudSpeechService,
   GCloudNLPService,
   GCloudVisionService } from './services/index';
@@ -67,6 +68,7 @@ import { environment } from '../environments/environment';
   ],
   providers: [
     WebSpeechService,
+    WebSynthService,
     GCloudNLPService,
     GCloudSpeechService,
     GCloudVisionService
