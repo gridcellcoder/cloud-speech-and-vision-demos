@@ -15,6 +15,7 @@
  */
 
 export * from './web-speech/web-speech.service';
+export * from './web-synth/web-synth.service';
 export * from './gcloud-speech/gcloud-speech.service';
 export * from './gcloud-nlp/gcloud-nlp.service';
 export * from './gcloud-vision/gcloud-vision.service';

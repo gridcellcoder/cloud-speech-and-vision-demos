@@ -69,11 +69,26 @@
     </div>
 
     <div class="col-sm-6 col-md-5 col-lg-4">
+      <md-card [ngBusy]="webSynthSubscription" class="card">
+        <div class="h4 title text-uppercase inline">Speech Syntethiser</div>
+        <p class="bg-warning">To get this to work you need to have a local instance of the speech-server up and running (See <a href="https://github.com/gridcellcoder/cloud-speech-and-vision-demos#speech-local-server" target="_blank"> README</a>) for full details. Then press the start button and a random sentence will be spoken..</p>
+        <button md-raised-button class="inline" [disabled]="webSynthSubscription" color="accent" (click)="startWebSynth()">START</button>
+        <div class="spacer"></div>
+        <md-input-container class="mb-0">
+          <textarea mdInput rows="2" [disabled]="!webSynthUtterance" placeholder="Utterance to be spoken" [(ngModel)]="webSynthUtterance">
+          </textarea>
+        </md-input-container>
+      </md-card>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6 col-md-5 col-md-offset-1 col-lg-4 col-lg-offset-2">
       <md-card [ngBusy]="gCloudSpeechSubscription" class="card">
         <div class="h4 title text-uppercase inline">GCloud Speech API</div>
         <p class="bg-warning">To get this to work you need to have a <a href="https://cloud.google.com/free/" target="_blank">
           Google Compute</a> account, install the <a href="https://cloud.google.com/sdk/downloads" target="_blank"> gcloud sdk</a>,
-          create a google compute project.   Then <a href="https://github.com/gridcellcoder/cloud-speech-and-vision-demos" target="_blank">clone</a>
+          create a google compute project. Then <a href="https://github.com/gridcellcoder/cloud-speech-and-vision-demos" target="_blank">clone</a>
           and change <a href="https://github.com/gridcellcoder/cloud-speech-and-vision-demos#configuration" target="_blank">environment.ts</a> with your project-id.
           and start the speech-server (See <a href="https://github.com/gridcellcoder/cloud-speech-and-vision-demos#speech-local-server" target="_blank"> README</a>) for full details. Then press the start button and say something..</p>
         <button md-raised-button class="inline"
@@ -105,10 +120,8 @@
         </div>
       </md-card>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+    <div class="col-sm-6 col-md-5 col-lg-4">
       <md-card [ngBusy]="gCloudVisionSubscription" class="card">
         <div class="h4 title text-uppercase">GCloud Vision API</div>
         <p>First select some features. Then upload an image from your computer to analyze its content</p>
