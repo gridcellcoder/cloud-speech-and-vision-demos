@@ -69,6 +69,6 @@ The coverage is not exaustive in any way, just wanting to provide a few examples
 
 ## Further help
 
-Don't hesitate to contact [GridCell](http://www.gridcell.io) or tweet us @gridcell_io
+Tweet us @gridcell_io
 
 All trademarks acknowledged, this is not a Google product nor affiliated with Google, Google Cloud Services.
